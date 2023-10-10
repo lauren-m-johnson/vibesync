@@ -2,7 +2,8 @@ from dotenv import load_dotenv
 import os
 import base64
 import json
-from requests import post
+import requests
+from requests import post, get
 
 load_dotenv()
 
@@ -25,9 +26,32 @@ def get_token():
     token = json_result['access_token']
     return token
 
-def get_auth_header(token):
-    return{'Authorization': 'Bearer ' + token}
+def search_for_playlist(token, playlist_name):
+    url = 'https://api.spotify.com/v1/search'
+    headers = {'Authorization': 'Bearer ' + token}
+    params = {'q': playlist_name, 'type': 'playlist', 'limit': 1}
 
+    response = requests.get(url, headers=headers, params=params)
+    json_result = response.json()
+    playlists = json_result['playlists']['items'] if 'playlists' in json_result else []
+    return playlists
+
+def get_playlist_details(token, playlist_id):
+    url = f'https://api.spotify.com/v1/playlists/{playlist_id}'
+    headers = {'Authorization': 'Bearer ' + token}
+
+    response = requests.get(url, headers=headers)
+    json_result = response.json()
+    return json_result
 
 token = get_token()
-print(token)
+playlists = search_for_playlist(token, 'Happy Folk')
+
+# Check if there are any playlists returned
+if playlists:
+    # Extract the id of the first playlist
+    playlist_id = playlists[0]['id']
+    playlist_details = get_playlist_details(token, playlist_id)
+    print(playlist_details)
+else:
+    print("No playlists found.")

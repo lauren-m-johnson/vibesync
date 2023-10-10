@@ -13,20 +13,36 @@
     <main>
         <section id="moods">
             <h2>What's your vibe?</h2>
-            <button>Happy</button>
-            <button>Sad</button>
-            <button>Angry</button>
-            <button>Fearful</button>
-            <button>In Love</button>
-            <button>Excited</button>
-            <button>Anxious</button>
-            <button>Optimistic</button>
-            <button>Deep in</button>
+            <button id="happy">Happy</button>
+            <button id="sad">Sad</button>
+            <button id="angry">Angry</button>
+            <button id="fearful">Fearful</button>
+            <button id="love">In Love</button>
+            <button id="excited">Excited</button>
+            <button id="anxious">Anxious</button>
+            <button id="optimistic">Optimistic</button>
+            <button id="deep">Deep in the feels</button>
         </section>
     </main>
 
     <footer>
         <p>Created by <a href="https://laurenmariejohnson.com/">Lauren Johnson</a> 2023</p>
     </footer>
+    <script>
+        function onButtonClick(mood) {
+            // Make a request to your Python backend
+            fetch(`/get_playlist?mood=${mood}`)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data); 
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    
+        document.getElementById('happy').addEventListener('click', () => onButtonClick('Happy'));
+        document.getElementById('sad').addEventListener('click', () => onButtonClick('Sad'));
+    </script>
 </body>
 </html>
